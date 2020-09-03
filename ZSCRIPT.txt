@@ -64,7 +64,7 @@ class LadderLauncher : HDWeapon
 
 	Default
 	{
-		+HDWEAPON.FITSINBACKPACK
+		-HDWEAPON.FITSINBACKPACK
 		Weapon.SelectionOrder 300;
 		Weapon.SlotNumber 0;
 		Scale 0.6;
