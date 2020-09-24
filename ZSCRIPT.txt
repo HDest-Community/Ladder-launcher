@@ -31,8 +31,8 @@ class LadderLauncher : HDWeapon
 		LWFLAG_JUSTUNLOAD
 	}
 
-	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override HDWeapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
+	override bool AddSpareWeapon(actor newowner) { return AddSpareWeaponRegular(newowner); }
+	override HDWeapon GetSpareWeapon(actor newowner, bool reverse, bool doselect) {return GetSpareWeaponRegular(newowner, reverse, doselect); }
 	override double GunMass() { return WeaponStatus[0] & LWFLAG_LOADED ? 6 : 4; }
 	override double WeaponBulk() { return 90 + (WeaponStatus[0] & LWFLAG_LOADED ? ENC_LADDER / 3 : 0); }
 	override string, double GetPickupSprite() { return "LLCHZ0", 1.0; }
