@@ -1,2 +1,0 @@
-LadderLauncher, RocketBoxRandom, 8;
-LadderLauncher, CellPackReplacer, 8;
