@@ -1,6 +1,6 @@
 version "4.0"
 
-class LadderLauncherHandler : EventHandler
+class LadderLauncherHandler : StaticEventHandler
 {
 	override void CheckReplacement(ReplaceEvent e)
 	{
