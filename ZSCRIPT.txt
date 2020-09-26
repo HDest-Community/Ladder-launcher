@@ -16,7 +16,6 @@ class LadderLauncherHandler : EventHandler
 				if (random[ladderrand]() <= 8)
 				{
 					e.Replacement = "LadderLauncher";
-					e.IsFinal = true;
 				}
 				break;
 		}
