@@ -13,7 +13,7 @@ class LadderLauncherHandler : EventHandler
 		{
 			case 'CellPackReplacer':
 			case 'RocketBoxRandom':
-				if (random() <= 8)
+				if (random[ladderrand]() <= 8)
 				{
 					e.Replacement = "LadderLauncher";
 					e.IsFinal = true;
