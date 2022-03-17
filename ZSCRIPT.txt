@@ -258,92 +258,39 @@ class LadderProjectile : SlowProjectile
 		Death:
 			TNT1 A 1
 			{
-				[success, a] = A_SpawnItemEx("HDLadderTopLedge", -16, 0, 0, angle: 180, flags: SXF_NOCHECKPOSITION | SXF_ORIGINATOR | SXF_SETMASTER);
-			}
-			TNT1 A 0
-			{
-				if (!a)
+				FLineTraceData data;
+				LineTrace(angle, 16, pitch, TRF_THRUACTORS, height / 2, data: data);
+				
+				vector2 off = Vec2Angle(-16, 0);
+				bool validHitSpot = false;
+				if (data.HitLine)
 				{
-					A_SpawnItemEx("PortableLadder", -10, 0, height - 16, 0, frandom(-1.0, 1.0), 2 + frandom(1.0, 2.0), 0, SXF_ABSOLUTEMOMENTUM | SXF_NOCHECKPOSITION);
+					double secHeight = 0;
+					if (data.Hit3DFloor)
+					{
+						secHeight = data.Hit3DFloor.top.ZAtPoint(off);
+					}
+					else
+					{
+						Sector s = data.HitLine.frontsector == CurSector ? data.HitLine.backsector : data.HitLine.frontsector;
+						secHeight = s.FloorPlane.ZAtPoint(off);
+					}
+					validHitSpot = abs(secHeight - pos.z) < 20;
+				}
+				
+				if (validHitSpot)
+				{
+					[success, a] = A_SpawnItemEx("HDLadderTop", -16, 0, 0, angle: 180, flags: SXF_NOCHECKPOSITION | SXF_ORIGINATOR | SXF_SETMASTER);
+					if (a)
+					{
+						a.TryMove(a.pos.xy, 1);
+					}
+				}
+				else
+				{
+					A_SpawnItemEx("PortableLadder", -10, 0, height - 18, 0, 0, 2 + frandom(1.0, 2.0), 0, SXF_NOCHECKPOSITION);
 				}
 			}
 			Goto Super::Death;
-	}
-}
-
-// [Ace] As much as I hate copy-pasting code without adapting it, I changed exactly ONE (1) line. Not worth fixing the format to be consistent.
-class HDLadderTopLedge : HDLadderTop
-{
-	override void postbeginplay(){
-		HDActor.postbeginplay();
-		A_SpawnParticle("darkred",0,10);
-		pitch=18;
-		bmissile=false;master=target;
-		setz(floorz);
-		fcheckposition tm;
-		vector2 mvlast=pos.xy;
-		vector2 mv=angletovector(angle,2);
-		for(int i=0;i<20;i++){
-
-			if(
-				!checkmove(mvlast,PCM_NOACTORS,tm)
-				&&!!master //don't break if placed by mapper
-			)break;
-
-			A_UnsetSolid();
-			mvlast+=mv;
-
-			//found a place for the ladder to hang down
-			double htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
-			if(
-				htdiff
-			){
-
-				//spawn the ladder end
-				target=spawn("hdladderbottom",tm.pos,ALLOW_REPLACE);
-				target.target=self;
-				target.master=master;
-				target.angle=angle;
-				target.pitch=-27;
-
-				vector2 mv2=mv*0.02;
-				vector3 newpos=tm.pos;
-
-				//spawn the ladder sections
-				double sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
-				for(int i=1;i<=LADDER_SECTIONS;i++){
-					newpos.xy+=mv2;
-					let sss=hdladdersection(spawn("hdladdersection",newpos,ALLOW_REPLACE));
-					sss.master=self;sss.target=target;sss.angle=angle+frandom(-1.,1.);
-					sss.secnum=i;
-					target.setorigin(newpos+(0,0,-sectionlength*i),true);
-					if(master){
-						sss.translation=master.translation;
-						target.translation=master.translation;
-					}
-				}
-
-				//reposition the thing
-				setorigin((tm.pos.xy-mv*radius,floorz),true);
-
-				//only complete if start or within throwable range, else abort
-				if(!master)return;
-				if(pos.z-master.pos.z<20){
-					A_StartSound("misc/ladder");
-					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
-					master.A_TakeInventory("PortableLadder",1);
-					return;
-				}
-			}
-		}
-
-		//if there's no lower floor to drop the ladder, abort.
-		if(master){
-			master.A_Log("Can't hang a ladder here.",true);
-		}else{
-			actor hdl=spawn("PortableLadder",pos,ALLOW_REPLACE);
-			hdl.A_StartSound("misc/ladder");
-		}
-		destroy();
 	}
 }
