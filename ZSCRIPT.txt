@@ -247,9 +247,6 @@ class LadderProjectile : SlowProjectile
 		Stamina 5;
 	}
 
-	private Actor a;
-	private bool Success;
-
 	States
 	{
 		Spawn:
@@ -280,6 +277,7 @@ class LadderProjectile : SlowProjectile
 				
 				if (validHitSpot)
 				{
+					bool success; Actor a;
 					[success, a] = A_SpawnItemEx("HDLadderTop", -16, 0, 0, angle: 180, flags: SXF_NOCHECKPOSITION | SXF_ORIGINATOR | SXF_SETMASTER);
 					if (a)
 					{
