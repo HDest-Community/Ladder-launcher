@@ -262,17 +262,18 @@ class LadderProjectile : SlowProjectile
 				bool validHitSpot = false;
 				if (data.HitLine)
 				{
-					double secHeight = 0;
 					if (data.Hit3DFloor)
 					{
-						secHeight = data.Hit3DFloor.top.ZAtPoint(off);
+						validHitSpot = abs(data.Hit3DFloor.top.ZAtPoint(off) - pos.z) < 20;
 					}
 					else
 					{
 						Sector s = data.HitLine.frontsector == CurSector ? data.HitLine.backsector : data.HitLine.frontsector;
-						secHeight = s.FloorPlane.ZAtPoint(off);
+						if (s)
+						{
+							validHitSpot = abs(s.FloorPlane.ZAtPoint(off) - pos.z) < 20;
+						}
 					}
-					validHitSpot = abs(secHeight - pos.z) < 20;
 				}
 				
 				if (validHitSpot)
