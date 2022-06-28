@@ -79,7 +79,7 @@ class LadderLauncher : HDWeapon
 	action void A_FireLadder()
 	{
 		A_StartSound("weapons/grenadeshot", CHAN_WEAPON, CHANF_OVERLAP);
-		let ggg = spawn("LadderProjectile", pos + (0, 0, HDWeapon.GetShootOffset(self, invoker.BarrelLength, invoker.BarrelLength - HDCONST_SHOULDERTORADIUS) - 2), ALLOW_REPLACE);
+		let ggg = spawn("LadderProjectile", pos + GunPos((0, 0, -4)), ALLOW_REPLACE);
 		ggg.angle=angle;
 		ggg.pitch=pitch - 2;
 		ggg.target=self;
